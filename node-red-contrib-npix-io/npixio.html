@@ -18,10 +18,10 @@
     <div class="form-row">
         <label for="node-input-out"><i class="fa fa-circle"></i> Output</span></label>
         <select type="text" id="node-input-out" style="width: 180px;">
-            <option value="15" </i>out0</option>
-            <option value="16" </i>out1</option>
-            <option value="22" </i>out2</option>
-            <option value="37" </i>out3</option>
+            <option value="15" </i>dio out0</option>
+            <option value="16" </i>dio out1</option>
+            <option value="22" </i>dio out2</option>
+            <option value="37" </i>dio out3</option>
          </select>
     </div>
 
@@ -52,10 +52,10 @@
         align: "left",
         label: function() {
            var na = "";
-           if (this.out === "15") { na = "out0"; }
-           if (this.out === "16") { na = "out1"; }
-           if (this.out === "22") { na = "out2"; }
-           if (this.out === "37") { na = "out3"; }
+           if (this.out === "15") { na = "dio out0"; }
+           if (this.out === "16") { na = "dio out1"; }
+           if (this.out === "22") { na = "dio out2"; }
+           if (this.out === "37") { na = "dio out3"; }
            return this.name||na;
         },
         labelStyle: function() {
@@ -69,10 +69,10 @@
     <div class="form-row">
         <label for="node-input-in"><i class="fa fa-circle"></i> Input</span></label>
         <select type="text" id="node-input-in" style="width: 180px;">
-            <option value="7" </i>in0</option>
-            <option value="8" </i>in1</option>
-            <option value="10" </i>in2</option>
-            <option value="11" </i>in3</option>
+            <option value="7" </i>dio in0</option>
+            <option value="8" </i>dio in1</option>
+            <option value="10" </i>dio in2</option>
+            <option value="11" </i>dio in3</option>
          </select>
     </div>
 
@@ -104,10 +104,10 @@
         align: "left",
         label: function() {
            var na = "";
-           if (this.in === "7") { na = "in0"; }
-           if (this.in === "8") { na = "in1"; }
-           if (this.in === "10") { na = "in2"; }
-           if (this.in === "11") { na = "in3"; }
+           if (this.in === "7") { na = "dio in0"; }
+           if (this.in === "8") { na = "dio in1"; }
+           if (this.in === "10") { na = "dio in2"; }
+           if (this.in === "11") { na = "dio in3"; }
            return this.name||na;
         },
         labelStyle: function() {
