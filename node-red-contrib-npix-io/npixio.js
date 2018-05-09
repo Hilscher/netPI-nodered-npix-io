@@ -103,35 +103,36 @@ module.exports = function(RED) {
       this.in = n.in;
       var node = this;
 
-      gpio.on('change', function(channel, value) {
-          // check the input pin
-          if( channel === parseInt(node.in) ) {
-
-             var tempMsg = {};
-             if (node.in === "7") {
-                 tempMsg.topic = "in0";
-             } else if (node.in === "8") {
-                 tempMsg.topic = "in1";
-             } else if (node.in === "10") {
-                 tempMsg.topic = "in2";
-             } else {
-                 tempMsg.topic = "in3";
-             }
-             if( value === true ) {
-                 tempMsg.payload = 1;
-                 node.status({fill:"green",shape:"dot",text:"set"});
-             } else {
-                 tempMsg.payload = 0;
-                 node.status({fill:"green",shape:"ring",text:"cleared"});
-             }
-             node.send(tempMsg);
-          }
-      });
+      
 
       gpio.setup(parseInt(node.in), gpio.DIR_IN, gpio.EDGE_BOTH, function (err) {
           if(err) {
                 RED.log.warn("[npixioinput] Can't control input, maybe already in use");
           } else {
+            gpio.on('change', function(channel, value) {
+                // check the input pin
+                if( channel === parseInt(node.in) ) {
+                    var tempMsg = {};
+                    if (node.in === "7") {
+                        tempMsg.topic = "in0";
+                    } else if (node.in === "8") {
+                        tempMsg.topic = "in1";
+                    } else if (node.in === "10") {
+                        tempMsg.topic = "in2";
+                    } else {
+                        tempMsg.topic = "in3";
+                    }
+                    if( value === true ) {
+                        tempMsg.payload = 1;
+                        node.status({fill:"green",shape:"dot",text:"set"});
+                    } else {
+                        tempMsg.payload = 0;
+                        node.status({fill:"green",shape:"ring",text:"cleared"});
+                    }
+                    node.send(tempMsg);
+                }
+            });  
+              
             gpio.read(parseInt(node.in), function (err,value) {
                 if(err) {
                     RED.log.warn("[npixioinput] Unable to read module input value");
