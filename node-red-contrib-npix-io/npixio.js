@@ -8,6 +8,12 @@ module.exports = function(RED) {
     var outnodes = 0;
     var nodes = 0;
 
+    var BCM_27 = 13;
+    var BCM_4 = "7"; 
+    var BCM_14 = "8";
+    var BCM_15 = "10";
+    var BCM_17 = "11";
+
 
     // NPIX-IO output node
     function npixiooutputNode(n) {
@@ -18,7 +24,7 @@ module.exports = function(RED) {
 
           gpio.on('change', function(channel, value) {
               // check the status pin
-              if( channel === 13 ) {
+              if( channel === BCM_27 ) {
                  for (var idx = 0; idx < outnodesemit.length; idx++) {
                     if( value === false ) {
                        outnodesemit[idx].myEmitter.emit('error');
@@ -30,8 +36,8 @@ module.exports = function(RED) {
           });
 
           // setup GPIO 27 (HAT pin 13) to input to get module overload/heat status
-          gpio.setup(13, gpio.DIR_IN, gpio.EDGE_BOTH, function (err) {
-             gpio.read(13, function (err,value) {
+          gpio.setup(BCM_27, gpio.DIR_IN, gpio.EDGE_BOTH, function (err) {
+             gpio.read(BCM_27, function (err,value) {
                 if(err) {
                    RED.log.warn("[npixiooutput] Unable to read overload/heat status");
                 } else {
@@ -61,7 +67,7 @@ module.exports = function(RED) {
       });
       outnodesemit.push(node);
 
-      gpio.setup(parseInt(node.out), gpio.DIR_HIGH, function (err) {
+      gpio.setup(parseInt(node.out), gpio.DIR_LOW, function (err) {
           if (err) {
               RED.log.warn("[npixiooutput] Can't control output, maybe already in use");
           } else {
@@ -83,13 +89,13 @@ module.exports = function(RED) {
                   }
 
                   nodes--;
-
                   if( nodes === 0) {
-                      gpio.destroy( function() {
-                        done();
-                      });
-                  } else {
+                    gpio.reset();
                     done();
+                  } else {
+                    gpio.destroy( function() {
+                      done();
+                    });
                   }
               });
           }
@@ -103,8 +109,6 @@ module.exports = function(RED) {
       this.in = n.in;
       var node = this;
 
-      
-
       gpio.setup(parseInt(node.in), gpio.DIR_IN, gpio.EDGE_BOTH, function (err) {
           if(err) {
                 RED.log.warn("[npixioinput] Can't control input, maybe already in use");
@@ -113,11 +117,11 @@ module.exports = function(RED) {
                 // check the input pin
                 if( channel === parseInt(node.in) ) {
                     var tempMsg = {};
-                    if (node.in === "7") {
+                    if (node.in === BCM_4) {
                         tempMsg.topic = "in0";
-                    } else if (node.in === "8") {
+                    } else if (node.in === BCM_14) {
                         tempMsg.topic = "in1";
-                    } else if (node.in === "10") {
+                    } else if (node.in === BCM_15) {
                         tempMsg.topic = "in2";
                     } else {
                         tempMsg.topic = "in3";
@@ -131,8 +135,8 @@ module.exports = function(RED) {
                     }
                     node.send(tempMsg);
                 }
-            });  
-              
+            });
+
             gpio.read(parseInt(node.in), function (err,value) {
                 if(err) {
                     RED.log.warn("[npixioinput] Unable to read module input value");
@@ -140,24 +144,24 @@ module.exports = function(RED) {
 
                     nodes++;
                     node.on("close", function(done) {
+
                       nodes--;
-
                       if( nodes === 0) {
-                          gpio.destroy( function() {
-                             done();
-                          });
-                      } else {
+                        gpio.reset();
                         done();
-                     }
-
+                      } else {
+                        gpio.destroy( function() {
+                          done();
+                        });
+                      }
                     });
 
                     var tempMsg = {};
-                    if (node.in === "7") {
+                    if (node.in === BCM_4) {
                         tempMsg.topic = "in0";
-                    } else if (node.in === "8") {
+                    } else if (node.in === BCM_14) {
                         tempMsg.topic = "in1";
-                    } else if (node.in === "10") {
+                    } else if (node.in === BCM_15) {
                         tempMsg.topic = "in2";
                     } else {
                         tempMsg.topic = "in3";
@@ -177,5 +181,4 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("npixioinput", npixioinputNode);
 }
-                          
-              
+
